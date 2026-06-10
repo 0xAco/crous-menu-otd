@@ -49,21 +49,22 @@ def parse(url: str) -> Tag | None:
   return None
 
 def format_menu(menu_element: Tag) -> str:
-  menu_str: str = ""
+  menu_str: str = get_today_str() + "\n\n"
   for section in menu_element.children:
-    menu_str += section.encode().decode()
-    menu_str = menu_str[4:] # remove <li> prefix
-    menu_str = menu_str.replace('</li></ul></li>', '\n') # section separator
-    menu_str = menu_str.replace('<ul>', '\n') # title <> first entry separator
-    menu_str = menu_str.replace('<li>', '\t') # sub-entry indent (actual food)
-    menu_str = menu_str.replace('</li>', '\n') # sub-entries separator
+    section_str = section.encode().decode()
+    section_str = section_str[4:] # remove <li> prefix
+    section_str = section_str.replace('</li></ul></li>', '\n') # section separator
+    section_str = section_str.replace('<ul>', '\n') # title <> first entry separator
+    section_str = section_str.replace('<li>', '\t') # sub-entry indent (actual food)
+    section_str = section_str.replace('</li>', '\n') # sub-entries separator
+    menu_str += section_str
   return menu_str
 
 lamazone: str = 'https://www.crous-bordeaux.fr/restaurant/resto-u-n1-ferme-pour-travaux-2/'
 today_menu: Tag | None = parse(lamazone)
 if today_menu is None:
-  exit("uhoh couldn't find the menu - check it's a weekday, or maybe you got firewalled")
+  exit("uhoh couldn't find the menu - check it's a weekday, or maybe you got firewalled lmao")
 menu_str: str = format_menu(today_menu)
 
-pyperclip.copy(menu_str) # copy to clipboard
 print(menu_str) # print for feedback
+pyperclip.copy(menu_str) # copy to clipboard
